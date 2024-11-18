@@ -2,3 +2,5 @@
 /cmake-build-debug
 /.vscode
 /CMakeLists.txt
+.DS_Store
+.idea/

@@ -1,5 +1,5 @@
 #include "../src/Kickboard.h"
-#include "../src/dbscan.h"
+#include "../src/DBSCAN.h"
 #include <vector>
 
 using namespace std;

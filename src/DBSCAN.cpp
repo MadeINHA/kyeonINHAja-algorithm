@@ -5,6 +5,7 @@
 #include <deque>
 #include <cmath>
 #include <algorithm>
+#include <iomanip>
 
 using namespace std;
 
@@ -58,15 +59,21 @@ double get_distance(const std::pair<double, double>& kick1, const std::pair<doub
 }
 
 void makeReturnJson(const vector<Kickboard>& k_tmp) {
-  cout << "[ ";
-  for (const auto& kick : k_tmp) {
-    cout << "{ \"id\": " << kick.get_id()
-         << ", \"lat\": " << kick.get_lat()
-         << ", \"lon\": " << kick.get_lng()
-         << ", \"cluster_id\": " << kick.get_cluster_id()
-         << " }, " << endl;
+  cout << "[\n";
+  for (size_t i = 0; i < k_tmp.size(); ++i) {
+    const auto& kick = k_tmp[i];
+    std::cout << "  { \"id\": " << kick.get_id()
+              << ", \"lat\": " << std::fixed << std::setprecision(7) << kick.get_lat()
+              << ", \"lon\": " << std::fixed << std::setprecision(7) << kick.get_lng()
+              << ", \"cluster_id\": " << kick.get_cluster_id()
+              << " }";
+    // 마지막 항목이 아닌 경우 쉼표 추가
+    if (i != k_tmp.size() - 1) {
+      std::cout << ",";
+    }
+    std::cout << "\n";
   }
-  cout << " ]";
+  std::cout << "]";
 }
 
 // DBSCAN 알고리즘 함수

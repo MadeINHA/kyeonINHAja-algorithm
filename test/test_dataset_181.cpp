@@ -1,11 +1,8 @@
-#include "../src/Kickboard.h"
-#include "../src/DBSCAN.h"
-#include <vector>
+#include "test_dataset.h"
 
-using namespace std;
-
-int main() {
-  std::vector<Kickboard> kickboard_info_list = {
+// 181개 킥보드 위치 정보로 구성된 test_dataset
+std::vector<Kickboard> get_test_dataset_181(){
+  return {
           Kickboard(1, 37.449091065967444, 126.65208740066505, 0),
           Kickboard(2, 37.44755636507776, 126.6533715218617, 0),
           Kickboard(3, 37.447153052625964, 126.65333382934702, 0),
@@ -188,10 +185,4 @@ int main() {
           Kickboard(180, 37.448626170410456, 126.65179007267966, 0),
           Kickboard(181, 37.44824908800296, 126.65148103987903, 0)
   };
-
-  vector<Kickboard> clustered_kickboards = DBSCAN(kickboard_info_list);
-
-  makeReturnJson(clustered_kickboards);
-
-  return 0;
 }

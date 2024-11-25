@@ -6,6 +6,8 @@
 #include <cmath>
 #include <algorithm>
 #include <iomanip>
+#include <map>
+#include <json/json.h>
 
 using namespace std;
 
@@ -58,22 +60,100 @@ double get_distance(const std::pair<double, double>& kick1, const std::pair<doub
   return dist;
 }
 
-void makeReturnJson(const vector<Kickboard>& k_tmp) {
-  cout << "[\n";
-  for (size_t i = 0; i < k_tmp.size(); ++i) {
-    const auto& kick = k_tmp[i];
-    std::cout << "  { \"id\": " << kick.get_id()
-              << ", \"lat\": " << std::fixed << std::setprecision(7) << kick.get_lat()
-              << ", \"lon\": " << std::fixed << std::setprecision(7) << kick.get_lng()
-              << ", \"cluster_id\": " << kick.get_cluster_id()
-              << " }";
-    // 마지막 항목이 아닌 경우 쉼표 추가
-    if (i != k_tmp.size() - 1) {
-      std::cout << ",";
+//  {
+//    "max_cluster" : 8,
+//            "cluster_list" : [
+//    {
+//      "cluster_id" : -1,
+//              "kickboard_list": [
+//      { "lat": 37.497942, "lng": 127.027636 },
+//      { "lat": 37.501478, "lng": 127.035786 },
+//      { "lat": 37.496222, "lng": 127.042999 },
+//      { "lat": 37.497942, "lng": 127.027636 }
+//      ]
+//    },
+//    {
+//      "cluster_id" : 1,
+//              "kickboard_list": [
+//      { "lat": 37.497942, "lng": 127.027636 },
+//      { "lat": 37.501478, "lng": 127.035786 },
+//      { "lat": 37.496222, "lng": 127.042999 },
+//      { "lat": 37.497942, "lng": 127.027636 }
+//      ]
+//    },
+//    {
+//      "cluster_id" : 2,
+//              "kickboard_list": [
+//      { "lat": 37.497942, "lng": 127.027636 },
+//      { "lat": 37.501478, "lng": 127.035786 },
+//      { "lat": 37.496222, "lng": 127.042999 },
+//      { "lat": 37.497942, "lng": 127.027636 }
+//      ]
+//    }
+//    ]
+//  }
+
+//void makeReturnJson(const vector<Kickboard>& k_tmp) {
+//  cout << "[\n";
+//  for (size_t i = 0; i < k_tmp.size(); ++i) {
+//    const auto& kick = k_tmp[i];
+//    std::cout << "  { \"id\": " << kick.get_id()
+//              << ", \"lat\": " << std::fixed << std::setprecision(7) << kick.get_lat()
+//              << ", \"lon\": " << std::fixed << std::setprecision(7) << kick.get_lng()
+//              << ", \"cluster_id\": " << kick.get_cluster_id()
+//              << " }";
+//    // 마지막 항목이 아닌 경우 쉼표 추가
+//    if (i != k_tmp.size() - 1) {
+//      std::cout << ",";
+//    }
+//    std::cout << "\n";
+//  }
+//  std::cout << "]";
+//}
+
+void makeReturnJson(const vector<Kickboard>& kickboards) {
+  // 클러스터별로 데이터를 그룹화하기 위한 map
+  map<int, vector<Kickboard>> cluster_map;
+  int max_cluster_id = -1;
+
+  for (const auto& kickboard : kickboards) {
+    int cluster_id = kickboard.get_cluster_id();
+
+    // 클러스터 ID별로 킥보드 데이터 저장
+    cluster_map[cluster_id].push_back(kickboard);
+
+    // 최대 클러스터 ID 갱신
+    if (cluster_id > max_cluster_id) {
+      max_cluster_id = cluster_id;
     }
-    std::cout << "\n";
   }
-  std::cout << "]";
+
+  // JSON 객체 생성
+  Json::Value kickboard_info_list_json;
+  kickboard_info_list_json["max_cluster"] = max_cluster_id;
+
+  Json::Value cluster_list(Json::arrayValue);
+  for (const auto& [cluster_id, kickboard_list] : cluster_map) {
+    Json::Value cluster;
+    cluster["cluster_id"] = cluster_id;
+
+    Json::Value kickboard_list_json(Json::arrayValue);
+    for (const auto& kickboard : kickboard_list) {
+      Json::Value kickboard_json;
+      kickboard_json["id"] = kickboard.get_id();
+      kickboard_json["lat"] = kickboard.get_lat();
+      kickboard_json["lng"] = kickboard.get_lng();
+      kickboard_list_json.append(kickboard_json);
+    }
+
+    cluster["kickboard_list"] = kickboard_list_json;
+    cluster_list.append(cluster);
+  }
+
+  kickboard_info_list_json["cluster_list"] = cluster_list;
+
+  // JSON 문자열 출력
+  cout << kickboard_info_list_json.toStyledString();
 }
 
 // DBSCAN 알고리즘 함수

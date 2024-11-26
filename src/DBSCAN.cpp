@@ -5,7 +5,6 @@
 #include <deque>
 #include <cmath>
 #include <algorithm>
-#include <iomanip>
 #include <map>
 #include <json/json.h>
 
@@ -52,13 +51,6 @@ void initial_global(int num_kickboards) {
   adj.assign(num_kickboards, vector<pair<double, int>>());
   cluster_count = 0;
 }
-
-// 거리 계산 함수
-//double get_distance(const std::pair<double, double>& kick1, const std::pair<double, double>& kick2) {
-//  double tmp = sqrt(pow(kick1.first - kick2.first, 2) + pow(kick1.second - kick2.second, 2));
-//  double dist = tmp * 100000;
-//  return dist;
-//}
 
 const double EARTH_RADIUS_KM = 6371.0; // 지구 반경 (킬로미터)
 
@@ -131,14 +123,14 @@ vector<Kickboard> DBSCAN(vector<Kickboard>& kickboard_info_list) {
   initial_global(kickboard_info_list.size());
 
   // 거리 계산 및 인접 리스트 생성
-  for (const auto& kick1 : kickboard_info_list) {
-    for (const auto& kick2 : kickboard_info_list) {
-      if (kick1.get_id() <= kick2.get_id()) continue;
-      //double dist = get_distance(kick1.get_coordinates(), kick2.get_coordinates());
-      pair<double, double> coordinate1 = kick1.get_coordinates(), coordinate2 = kick2.get_coordinates();
-      double dist = haversine(coordinate1.first, coordinate1.second, coordinate2.first, coordinate2.second) * 1000;
-      adj[kick1.get_id()].emplace_back(dist, kick2.get_id());
-      adj[kick2.get_id()].emplace_back(dist, kick1.get_id());
+  for (size_t i = 0; i < kickboard_info_list.size(); ++i) {
+    for (size_t j = 0; j < i; ++j) {
+      double dist = haversine(
+              kickboard_info_list[i].get_lat(), kickboard_info_list[i].get_lng(),
+              kickboard_info_list[j].get_lat(), kickboard_info_list[j].get_lng()
+      ) * 1000;
+      adj[i].emplace_back(dist, j);
+      adj[j].emplace_back(dist, i);
     }
   }
 

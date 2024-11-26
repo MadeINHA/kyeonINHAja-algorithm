@@ -54,10 +54,31 @@ void initial_global(int num_kickboards) {
 }
 
 // 거리 계산 함수
-double get_distance(const std::pair<double, double>& kick1, const std::pair<double, double>& kick2) {
-  double tmp = sqrt(pow(kick1.first - kick2.first, 2) + pow(kick1.second - kick2.second, 2));
-  double dist = tmp * 100000;
-  return dist;
+//double get_distance(const std::pair<double, double>& kick1, const std::pair<double, double>& kick2) {
+//  double tmp = sqrt(pow(kick1.first - kick2.first, 2) + pow(kick1.second - kick2.second, 2));
+//  double dist = tmp * 100000;
+//  return dist;
+//}
+
+const double EARTH_RADIUS_KM = 6371.0; // 지구 반경 (킬로미터)
+
+double toRadians(double degree) {
+  return degree * M_PI / 180.0;
+}
+
+double haversine(double lat1, double lon1, double lat2, double lon2) {
+  double dLat = toRadians(lat2 - lat1);
+  double dLon = toRadians(lon2 - lon1);
+
+  lat1 = toRadians(lat1);
+  lat2 = toRadians(lat2);
+
+  double a = sin(dLat / 2) * sin(dLat / 2) +
+             cos(lat1) * cos(lat2) * sin(dLon / 2) * sin(dLon / 2);
+
+  double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+
+  return EARTH_RADIUS_KM * c;
 }
 
 void makeReturnJson(const vector<Kickboard>& kickboards) {
@@ -113,7 +134,9 @@ vector<Kickboard> DBSCAN(vector<Kickboard>& kickboard_info_list) {
   for (const auto& kick1 : kickboard_info_list) {
     for (const auto& kick2 : kickboard_info_list) {
       if (kick1.get_id() <= kick2.get_id()) continue;
-      double dist = get_distance(kick1.get_coordinates(), kick2.get_coordinates());
+      //double dist = get_distance(kick1.get_coordinates(), kick2.get_coordinates());
+      pair<double, double> coordinate1 = kick1.get_coordinates(), coordinate2 = kick2.get_coordinates();
+      double dist = haversine(coordinate1.first, coordinate1.second, coordinate2.first, coordinate2.second) * 1000;
       adj[kick1.get_id()].emplace_back(dist, kick2.get_id());
       adj[kick2.get_id()].emplace_back(dist, kick1.get_id());
     }

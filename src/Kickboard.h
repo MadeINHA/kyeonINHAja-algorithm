@@ -28,9 +28,6 @@ public:
     int get_parking_zone() const;
 
     std::pair<double, double> get_coordinates() const;
-
-    std::map<std::string, std::variant<int, double, std::string>> json_return_dbscan() const;
-    std::map<std::string, std::variant<int, double, std::string>> json_return_convex() const;
 };
 
 #endif

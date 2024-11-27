@@ -34,25 +34,3 @@ int Kickboard::get_parking_zone() const {
 std::pair<double, double> Kickboard::get_coordinates() const {
   return {lat, lng};
 }
-
-std::map<std::string, std::variant<int, double, std::string>> Kickboard::json_return_dbscan() const {
-  return {
-          {"id", id},
-          {"lat", lat},
-          {"lon", lng},
-          {"cluster_id", cluster_id},
-          {"parking_zone", parking_zone},
-          {"border", false}
-  };
-}
-
-std::map<std::string, std::variant<int, double, std::string>> Kickboard::json_return_convex() const {
-  return {
-          {"id", id},
-          {"lat", lat},
-          {"lon", lng},
-          {"cluster_id", cluster_id},
-          {"parking_zone", parking_zone},
-          {"border", border}
-  };
-}

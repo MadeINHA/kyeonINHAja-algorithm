@@ -4,6 +4,7 @@
 #include "Kickboard.h"
 #include <vector>
 #include <utility> // for std::pair
+#include <json/json.h>
 
 // 전역 변수 초기화 함수
 void initial_global(int num_kickboards);
@@ -17,7 +18,7 @@ void bfs(std::vector<Kickboard>& kickboard_info_list, int start);
 // DBSCAN 알고리즘 함수
 std::vector<Kickboard> DBSCAN(std::vector<Kickboard>& kickboard_info_list);
 
-// 결과를 JSON 형식으로 출력하는 함수
-void makeReturnJson(const std::vector<Kickboard>& kickboards);
+// DBSCAN 결과를 JSON 형식 변환하는 함수
+Json::Value DBSCANToJson(const std::vector<Kickboard>& kickboards);
 
 #endif // DBSCAN_H

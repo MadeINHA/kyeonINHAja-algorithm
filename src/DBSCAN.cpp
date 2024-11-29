@@ -1,4 +1,4 @@
-#include "Kickboard.h"
+#include "DBSCAN.h"
 
 #include <iostream>
 #include <vector>
@@ -6,7 +6,6 @@
 #include <cmath>
 #include <algorithm>
 #include <map>
-#include <json/json.h>
 
 using namespace std;
 
@@ -73,7 +72,7 @@ double haversine(double lat1, double lon1, double lat2, double lon2) {
   return EARTH_RADIUS_KM * c;
 }
 
-void makeReturnJson(const vector<Kickboard>& kickboards) {
+Json::Value DBSCANToJson(const vector<Kickboard>& kickboards) {
   // 클러스터별로 데이터를 그룹화하기 위한 map
   map<int, vector<Kickboard>> cluster_map;
   int max_cluster_id = -1;
@@ -115,7 +114,8 @@ void makeReturnJson(const vector<Kickboard>& kickboards) {
   kickboard_info_list_json["cluster_list"] = cluster_list;
 
   // JSON 문자열 출력
-  cout << kickboard_info_list_json.toStyledString();
+  // cout << kickboard_info_list_json.toStyledString();
+  return kickboard_info_list_json;
 }
 
 // DBSCAN 알고리즘 함수

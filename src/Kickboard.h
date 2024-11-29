@@ -13,7 +13,7 @@ private:
     double lng;
     int cluster_id;
     int parking_zone; // 0 : 주차 금지 구역, 1 : 주차 가능 구역, 2 : 주차 권장 구역
-    bool border; // 가장 바깥에 위치한 킥보드인지 여부
+    int border_index;
 
 public:
     Kickboard(int id, double lat, double lng, int parking_zone);

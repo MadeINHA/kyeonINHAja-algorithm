@@ -5,6 +5,7 @@
 #include <vector>
 #include <utility> // for std::pair
 #include <json/json.h>
+#include <fstream>
 
 // 전역 변수 초기화 함수
 void initial_global(int num_kickboards);

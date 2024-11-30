@@ -4,6 +4,7 @@
 #include "Kickboard.h"
 #include <vector>
 #include <json/json.h>
+#include <fstream>
 
 struct Cluster { // JSON 파싱된 데이터를 담기 위한 구조체
     int cluster_id;

@@ -10,12 +10,15 @@
 using namespace std;
 
 int main() {
+  srand(static_cast<unsigned>(time(0)));
   // 데이터셋 호출
   vector<Kickboard> kickboard_info_list_181 = get_test_dataset_181();
   vector<Kickboard> kickboard_info_list_550 = get_test_dataset_550();
+  vector<Kickboard> kickboard_info_list_1000 = generate_new_data(kickboard_info_list_550, 1000);
 
   // DBSCAN 클러스터링 실행
-  vector<Kickboard> clustered_kickboards = DBSCAN(kickboard_info_list_550);
+  // vector<Kickboard> clustered_kickboards = DBSCAN(kickboard_info_list_550);
+  vector<Kickboard> clustered_kickboards = DBSCAN(kickboard_info_list_1000);
 
   // DBSCAN JSON 변환
   Json::Value dbscan_json = DBSCANToJson(clustered_kickboards);

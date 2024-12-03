@@ -750,7 +750,7 @@ std::vector<Kickboard> generate_new_data(const std::vector<Kickboard>& existing_
 
   // 랜덤 변동 범위 설정
   double delta_lat = 0.0001; // 약 11m 이내 변동
-  double delta_lng = 0.0001; // 약 100m 이내 변동
+  double delta_lng = 0.0001; // 약 11m 이내 변동
 
   for (int i = existing_data.size(); i < total_count; ++i) {
     const Kickboard& base = existing_data[rand() % existing_data.size()];
@@ -761,4 +761,42 @@ std::vector<Kickboard> generate_new_data(const std::vector<Kickboard>& existing_
   }
 
   return new_data;
+}
+
+// 랜덤 변경 함수
+std::vector<Kickboard> randomly_modify_positions(const std::vector<Kickboard>& existing_data, int modify_count) {
+  // 랜덤 추출할 데이터 개수 제한
+  modify_count = std::min(modify_count, static_cast<int>(existing_data.size()));
+
+  // 기존 데이터를 복사
+  std::vector<Kickboard> modified_data = existing_data;
+
+  // 랜덤 엔진 초기화
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<double> dist(-1.0, 1.0); // [-1.0, 1.0] 범위의 실수 생성
+
+  // 랜덤하게 modify_count개의 킥보드 선택
+  std::vector<int> indices(existing_data.size());
+  std::iota(indices.begin(), indices.end(), 0); // 0부터 n-1까지 인덱스 생성
+  std::shuffle(indices.begin(), indices.end(), gen); // C++17 이상에서 std::shuffle 사용
+
+  // 랜덤 변동 범위 설정
+  double delta_lat = 0.0001; // 약 11m 이내 변동
+  double delta_lng = 0.0001; // 약 11m 이내 변동
+
+  // 선택된 킥보드의 위치를 랜덤 변경
+  for (int i = 0; i < modify_count; ++i) {
+    int idx = indices[i];
+    double random_factor_lat = dist(gen); // -1.0 ~ 1.0 범위의 난수
+    double random_factor_lng = dist(gen);
+
+    double new_lat = modified_data[idx].get_lat() + random_factor_lat * delta_lat;
+    double new_lng = modified_data[idx].get_lng() + random_factor_lng * delta_lng;
+
+    // 새로운 위치 설정
+    modified_data[idx] = Kickboard(modified_data[idx].get_id(), new_lat, new_lng, modified_data[idx].get_parking_zone());
+  }
+
+  return modified_data;
 }

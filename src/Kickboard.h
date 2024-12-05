@@ -12,7 +12,7 @@ private:
     double lat;
     double lng;
     int cluster_id;
-    int parking_zone; // 0 : 주차 금지 구역, 1 : 주차 가능 구역, 2 : 주차 권장 구역
+    int parking_zone; // 0 : 주차 금지 구역, 1 : 기존 주차 구역, 2 : 주차 권장 구역, 3 : 주차 가능 구역
     bool acting; // true : 주행중, false : 주차중
 
 public:

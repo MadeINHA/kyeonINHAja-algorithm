@@ -31,6 +31,14 @@ void bfs(vector<Kickboard>& kickboard_info_list, int start) {
     for (const auto& p : adj[x]) {
       if (p.first > EPS) break;
       if (visited[p.second]) continue;
+
+      const Kickboard& neighbor_kickboard = kickboard_info_list[p.second];
+
+      // 추가 조건: acting == true 또는 parking_zone < 2인 경우 제외
+      if (neighbor_kickboard.get_acting() || neighbor_kickboard.get_parking_zone() < 2) {
+        continue;
+      }
+      
       visited[p.second] = true;
       queue.push_back(p.second);
     }
@@ -154,6 +162,13 @@ vector<Kickboard> DBSCAN(vector<Kickboard>& kickboard_info_list) {
   // BFS를 통한 클러스터링
   for (int i = 0; i < kickboard_info_list.size(); ++i) {
     if (visited[i]) continue;
+
+    // 킥보드가 주행중인 경우 탐색하지 않음
+    // 주차 금지 구역에 위치(0) or 기존 주차 구역(1)에 위치한 경우 탐색하지 않음
+    if (kickboard_info_list[i].get_acting() || kickboard_info_list[i].get_parking_zone() < 2) {
+      visited[i] = true;
+      continue;
+    }
     bfs(kickboard_info_list, i);
   }
 

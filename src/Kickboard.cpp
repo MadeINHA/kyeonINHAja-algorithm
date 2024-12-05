@@ -1,7 +1,7 @@
 #include "Kickboard.h"
 
 Kickboard::Kickboard(int id, double lat, double lng, int parking_zone)
-        : id(id), lat(lat), lng(lng), cluster_id(-1), parking_zone(parking_zone), border_index(-1) {}
+        : id(id), lat(lat), lng(lng), cluster_id(-1), parking_zone(parking_zone), acting(false) {}
 
 void Kickboard::set_cluster_id(int num) {
   cluster_id = num;
@@ -9,6 +9,10 @@ void Kickboard::set_cluster_id(int num) {
 
 void Kickboard::set_parking_zone(int num) {
   parking_zone = num;
+}
+
+void Kickboard::set_acting(bool state) {
+  acting = state;
 }
 
 int Kickboard::get_id() const {
@@ -31,6 +35,6 @@ int Kickboard::get_parking_zone() const {
   return parking_zone;
 }
 
-std::pair<double, double> Kickboard::get_coordinates() const {
-  return {lat, lng};
+bool Kickboard::get_acting() const {
+  return acting;
 }

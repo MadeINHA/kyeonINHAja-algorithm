@@ -128,17 +128,5 @@ Json::Value ConvexToJson(const std::vector<std::vector<Kickboard>>& border_kickb
   root["cluster_list"] = cluster_list;
   root["max_cluster"] = max_cluster;
 
-  // JSON 문자열 출력
-  // cout << root.toStyledString();
-
-  // JSON 데이터를 파일로 저장
-  std::ofstream file("../convex_output.json"); // 저장할 파일 이름
-  if (file.is_open()) {
-    file << root.toStyledString(); // JSON 데이터를 파일에 기록
-    file.close();
-    std::cout << "JSON 데이터가 convex_output.json 파일에 저장되었습니다." << std::endl;
-  } else {
-    std::cerr << "파일을 열 수 없습니다!" << std::endl;
-  }
   return root;
 }

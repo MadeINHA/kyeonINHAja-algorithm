@@ -90,6 +90,22 @@ public :
 
 };
 
-int main() {
+void RunServer(){
+    string server_address("0.0.0.0:50051");
+    AlgorithmServiceImpl service;
 
+    ServerBuilder builder;
+    builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
+    builder.RegisterService(&service);
+
+    unique_ptr<Server> server(builder.BuildAndStart());
+    cout << "Server on : " << server_address << endl; // 나중에 꼭 지우셈
+
+    server->Wait();
+}
+
+
+int main() {
+    RunServer();
+    return 0;
 }

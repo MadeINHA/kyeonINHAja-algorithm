@@ -124,6 +124,46 @@ Json::Value DBSCANToJson(const vector<Kickboard>& kickboards) {
     return kickboard_info_list_json;
 }
 
+Json::Value DBSCANToResponse(const vector<Kickboard>& kickboards) {
+    // 클러스터별로 데이터를 그룹화하기 위한 map
+    map<int, vector<Kickboard>> cluster_map;
+    int max_cluster_id = -1;
+
+    for (const auto& kickboard : kickboards) {
+        int cluster_id = kickboard.get_cluster_id();
+
+        // 클러스터 ID별로 킥보드 데이터 저장
+        cluster_map[cluster_id].push_back(kickboard);
+
+        // 최대 클러스터 ID 갱신
+        if (cluster_id > max_cluster_id) {
+            max_cluster_id = cluster_id;
+        }
+    }
+
+    // JSON 객체 생성
+    Json::Value kickboard_info_list_json;
+    kickboard_info_list_json["max_cluster"] = max_cluster_id;
+
+    Json::Value cluster_list(Json::arrayValue);
+    for (const auto& [cluster_id, kickboard_list] : cluster_map) {
+        Json::Value cluster;
+        cluster["cluster_id"] = cluster_id;
+
+        Json::Value kickboard_list_json(Json::arrayValue);
+        for (const auto& kickboard : kickboard_list) {
+            kickboard_list_json.append(static_cast<Json::Int64>(kickboard.get_id()));
+        }
+
+        cluster["kickboard_list"] = kickboard_list_json;
+        cluster_list.append(cluster);
+    }
+
+    kickboard_info_list_json["cluster_list"] = cluster_list;
+
+    return kickboard_info_list_json;
+}
+
 // DBSCAN 알고리즘 함수
 vector<Kickboard> DBSCAN(vector<Kickboard>& kickboard_info_list) {
   initial_global(kickboard_info_list.size());

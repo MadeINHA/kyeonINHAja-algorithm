@@ -12,6 +12,15 @@
 #include <grpcpp/grpcpp.h>
 
 using namespace std;
+using grpc::Server;
+using grpc::ServerBuilder;
+using grpc::ServerContext;
+using grpc::Status;
+using algorithm::AlgorithmRequest;
+using algorithm::AlgorithmResponse;
+using algorithm::AlgorithmService;
+
+Json::Value dbscan_json;
 
 vector<Kickboard> parseKickboards(const std::string& jsonString) {
     vector<Kickboard> kickboards;
@@ -43,6 +52,23 @@ vector<Kickboard> parseKickboards(const std::string& jsonString) {
 
     return kickboards;
 }
+
+class AlgorithmServiceImpl final : public algorithm::AlgorithmService::Service{
+public :
+    Status DbScan(ServerContext* context, const AlgorithmRequest* request, AlgorithmResponse* response) override {
+        string &input = const_cast<string &>(request->json_input());
+
+        vector<Kickboard> kickboard_list = parseKickboards(input);
+        vector<Kickboard> clustered_kickboards = DBSCAN(kickboard_list);
+        dbscan_json = DBSCANToJson(clustered_kickboards);
+
+        string output_json = DBSCANToResponse(clustered_kickboards).toStyledString();
+
+        response->set_json_output(output_json);
+        return Status::OK;
+    }
+
+};
 
 int main() {
 

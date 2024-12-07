@@ -4,30 +4,30 @@
 using namespace std;
 
 std::pair<std::vector<Cluster>, int> parseJson(const Json::Value& root) {
-  vector<Cluster> clusters;
+    vector<Cluster> clusters;
 
-  // 클러스터 리스트 파싱
-  const Json::Value cluster_list = root["cluster_list"];
-  for (const auto& cluster : cluster_list) {
-    int cluster_id = cluster["cluster_id"].asInt();
-    Cluster current_cluster(cluster_id);
+    // 클러스터 리스트 파싱
+    const Json::Value cluster_list = root["cluster_list"];
+    for (const auto& cluster : cluster_list) {
+        int cluster_id = cluster["cluster_id"].asInt();
+        Cluster current_cluster(cluster_id);
 
-    // 킥보드 리스트 파싱
-    const Json::Value kickboard_list = cluster["kickboard_list"];
-    for (const auto& kickboard : kickboard_list) {
-      int id = kickboard["id"].asInt();
-      double lat = kickboard["lat"].asDouble();
-      double lng = kickboard["lng"].asDouble();
-      current_cluster.kickboard_list.emplace_back(id, lat, lng, 0);
+        // 킥보드 리스트 파싱
+        const Json::Value kickboard_list = cluster["kickboard_list"];
+        for (const auto& kickboard : kickboard_list) {
+            long id = kickboard["id"].asLargestInt();
+            double lat = kickboard["lat"].asDouble();
+            double lng = kickboard["lng"].asDouble();
+            current_cluster.kickboard_list.emplace_back(id, lat, lng,cluster_id,0, false);
+        }
+
+        clusters.push_back(current_cluster);
     }
 
-    clusters.push_back(current_cluster);
-  }
+    const Json::Value max_cluster = root["max_cluster"];
+    int max_cluster_int = max_cluster.asInt();
 
-  const Json::Value max_cluster = root["max_cluster"];
-  int max_cluster_int = max_cluster.asInt();
-
-  return {clusters, max_cluster_int};
+    return {clusters, max_cluster_int};
 }
 
 double getCrossProduct(Kickboard& kick1, Kickboard& kick2, Kickboard& kick3){
@@ -116,7 +116,7 @@ Json::Value ConvexToJson(const std::vector<std::vector<Kickboard>>& border_kickb
 
     for (const auto& kickboard : border_kickboard_list[i]) {
       Json::Value kickboard_json;
-      kickboard_json["id"] = kickboard.get_id();
+      kickboard_json["id"] = static_cast<Json::Int64>(kickboard.get_id());
       kickboard_json["lat"] = kickboard.get_lat();
       kickboard_json["lng"] = kickboard.get_lng();
       kickboard_list.append(kickboard_json);

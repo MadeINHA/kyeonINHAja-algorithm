@@ -68,6 +68,26 @@ public :
         return Status::OK;
     }
 
+    Status convexHull(ServerContext* context, const AlgorithmRequest* request, AlgorithmResponse* response) override {
+        auto clusters_pair = parseJson(dbscan_json);
+        auto clusters = clusters_pair.first;
+        int max_cluster = clusters_pair.second;
+
+        vector<Kickboard> kickboards, border_kickboards;
+        vector<vector<Kickboard>> border_kickboard_list;
+        for(int i=1; i<=max_cluster; i++){
+            kickboards = clusters[i].kickboard_list;
+            border_kickboards = grahamScan(kickboards);
+            border_kickboard_list.push_back(border_kickboards);
+        }
+
+        Json::Value convex_json = ConvexToJson(border_kickboard_list, max_cluster);
+        string output_json = convex_json.toStyledString();
+
+        response->set_json_output(output_json);
+        return Status::OK;
+    }
+
 };
 
 int main() {

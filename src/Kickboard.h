@@ -8,26 +8,31 @@
 
 class Kickboard {
 private:
-    int id;
+    long id;
     double lat;
     double lng;
     int cluster_id;
-    int parking_zone; // 0 : 주차 금지 구역, 1 : 기존 주차 구역, 2 : 주차 권장 구역, 3 : 주차 가능 구역
-    bool acting; // true : 주행중, false : 주차중
+    int parking_zone; // 0 : 주차 금지 구역, 1 : 주차 가능 구역, 2 : 주차 권장 구역
+    bool acting;
 
 public:
-    Kickboard(int id, double lat, double lng, int parking_zone);
+    Kickboard(long id, double lat, double lng, int cluster_id, int parking_zone, bool acting);
+
+    Kickboard(long id, double lat, double lng, int parking_zone);
 
     void set_cluster_id(int num);
     void set_parking_zone(int num);
-    void set_acting(bool state);
 
-    int get_id() const;
+    long get_id() const;
     double get_lat() const;
     double get_lng() const;
     int get_cluster_id() const;
     int get_parking_zone() const;
     bool get_acting() const;
+
+    std::pair<double, double> get_coordinates() const;
+
+
 };
 
 #endif

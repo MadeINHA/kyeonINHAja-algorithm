@@ -19,7 +19,10 @@ void bfs(std::vector<Kickboard>& kickboard_info_list, int start);
 // DBSCAN 알고리즘 함수
 std::vector<Kickboard> DBSCAN(std::vector<Kickboard>& kickboard_info_list);
 
-// DBSCAN 결과를 JSON 형식 변환하는 함수
+// DBSCAN 결과를 ConvexHull 알고리즘으로 전달하기 위해 Json으로 변환하는 함수
+Json::Value DBSCANToJson(const std::vector<Kickboard>& kickboards);
+
+// DBSCAN 결과를 서비스 서버로 전송하기 위해 Json으로 변환하는 함수
 Json::Value DBSCANToJson(const std::vector<Kickboard>& kickboards);
 
 #endif // DBSCAN_H

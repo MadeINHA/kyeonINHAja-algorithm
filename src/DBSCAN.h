@@ -23,6 +23,6 @@ std::vector<Kickboard> DBSCAN(std::vector<Kickboard>& kickboard_info_list);
 Json::Value DBSCANToJson(const std::vector<Kickboard>& kickboards);
 
 // DBSCAN 결과를 서비스 서버로 전송하기 위해 Json으로 변환하는 함수
-Json::Value DBSCANToJson(const std::vector<Kickboard>& kickboards);
+Json::Value DBSCANToResponse(const std::vector<Kickboard>& kickboards);
 
 #endif // DBSCAN_H

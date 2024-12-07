@@ -101,39 +101,27 @@ Json::Value DBSCANToJson(const vector<Kickboard>& kickboards) {
   Json::Value kickboard_info_list_json;
   kickboard_info_list_json["max_cluster"] = max_cluster_id;
 
-  Json::Value cluster_list(Json::arrayValue);
-  for (const auto& [cluster_id, kickboard_list] : cluster_map) {
-    Json::Value cluster;
-    cluster["cluster_id"] = cluster_id;
+    Json::Value cluster_list(Json::arrayValue);
+    for (const auto& [cluster_id, kickboard_list] : cluster_map) {
+        Json::Value cluster;
+        cluster["cluster_id"] = cluster_id;
 
-    Json::Value kickboard_list_json(Json::arrayValue);
-    for (const auto& kickboard : kickboard_list) {
-      Json::Value kickboard_json;
-      kickboard_json["id"] = kickboard.get_id();
-      kickboard_json["lat"] = kickboard.get_lat();
-      kickboard_json["lng"] = kickboard.get_lng();
-      kickboard_list_json.append(kickboard_json);
+        Json::Value kickboard_list_json(Json::arrayValue);
+        for (const auto& kickboard : kickboard_list) {
+            Json::Value kickboard_json;
+            kickboard_json["id"] = static_cast<Json::Int64>(kickboard.get_id());
+            kickboard_json["lat"] = kickboard.get_lat();
+            kickboard_json["lng"] = kickboard.get_lng();
+            kickboard_list_json.append(kickboard_json);
+        }
+
+        cluster["kickboard_list"] = kickboard_list_json;
+        cluster_list.append(cluster);
     }
 
-    cluster["kickboard_list"] = kickboard_list_json;
-    cluster_list.append(cluster);
-  }
+    kickboard_info_list_json["cluster_list"] = cluster_list;
 
-  kickboard_info_list_json["cluster_list"] = cluster_list;
-
-  // JSON 문자열 출력
-  // cout << kickboard_info_list_json.toStyledString();
-
-  // JSON 데이터를 파일로 저장
-  std::ofstream file("../dbscan_output.json"); // 저장할 파일 이름
-  if (file.is_open()) {
-    file << kickboard_info_list_json.toStyledString(); // JSON 데이터를 파일에 기록
-    file.close();
-    std::cout << "JSON 데이터가 dbscan_output.json 파일에 저장되었습니다." << std::endl;
-  } else {
-    std::cerr << "파일을 열 수 없습니다!" << std::endl;
-  }
-  return kickboard_info_list_json;
+    return kickboard_info_list_json;
 }
 
 // DBSCAN 알고리즘 함수

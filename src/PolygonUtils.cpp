@@ -36,24 +36,17 @@ bool isPointInPolygon(const vector<Kickboard>& border_kickboards, const Kickboar
 }
 
 Coordinate calculateCentroid(const vector<Kickboard>& border_kickboards) {
-  double area = 0.0; // 다각형 면적
-  double lngCenter = 0.0;   // 중심점 get_lng() 좌표
-  double latCenter = 0.0;   // 중심점 get_lat() 좌표
+    double avgLat = 0.0;
+    double avgLng = 0.0;
 
-  size_t n = border_kickboards.size();
-  for (size_t i = 0; i < n; ++i) {
-    const Kickboard& kick1 = border_kickboards[i];
-    const Kickboard& kick2 = border_kickboards[(i + 1) % n]; // 마지막 점과 첫 번째 점을 연결
+    size_t n = border_kickboards.size();
+    for (const auto& kick : border_kickboards) {
+        avgLat += kick.get_lat();
+        avgLng += kick.get_lng();
+    }
 
-    double cross = kick1.get_lng() * kick2.get_lat() - kick2.get_lng() * kick1.get_lat();
-    area += cross;
-    lngCenter += (kick1.get_lng() + kick2.get_lng()) * cross;
-    latCenter += (kick1.get_lat() + kick2.get_lat()) * cross;
-  }
+    avgLat /= n;
+    avgLng /= n;
 
-  area *= 0.5;
-  lngCenter /= (6.0 * area);
-  latCenter /= (6.0 * area);
-
-    return {latCenter, lngCenter};
+    return {avgLat, avgLng};
 }

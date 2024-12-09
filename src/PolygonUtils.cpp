@@ -55,5 +55,5 @@ Coordinate calculateCentroid(const vector<Kickboard>& border_kickboards) {
   lngCenter /= (6.0 * area);
   latCenter /= (6.0 * area);
 
-  return {lngCenter, latCenter};
+    return {latCenter, lngCenter};
 }

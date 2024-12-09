@@ -2,6 +2,7 @@
 #define ConvexHull_H
 
 #include "Kickboard.h"
+#include "PolygonUtils.h"
 #include <vector>
 #include <json/json.h>
 #include <fstream>

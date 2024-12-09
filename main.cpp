@@ -88,7 +88,12 @@ public :
         return Status::OK;
     }
 
+    Status PointInPolygon(ServerContext* context, const AlgorithmRequest* request, AlgorithmResponse* response) override {
+
+
+    }
 };
+
 
 void RunServer(){
     string server_address("0.0.0.0:50051");

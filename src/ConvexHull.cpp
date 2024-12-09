@@ -121,8 +121,10 @@ Json::Value ConvexToJson(const std::vector<std::vector<Kickboard>>& border_kickb
       kickboard_json["lng"] = kickboard.get_lng();
       kickboard_list.append(kickboard_json);
     }
-
+    const Coordinate &coordinate = calculateCentroid(border_kickboard_list[i]);
     cluster_json["kickboard_list"] = kickboard_list;
+    cluster_json["cent_lat"] = coordinate.lat;
+    cluster_json["cent_lng"] = coordinate.lng;
     cluster_list.append(cluster_json);
   }
   root["cluster_list"] = cluster_list;

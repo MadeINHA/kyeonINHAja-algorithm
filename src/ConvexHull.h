@@ -31,6 +31,6 @@ double getCrossProduct(Kickboard& kick1, Kickboard& kick2, Kickboard& kick3);
 std::vector<Kickboard> grahamScan (std::vector<Kickboard> kickboard_list);
 
 // Convex Hull 결과 값을 Json으로 변환하는 함수
-Json::Value ConvexToJson(const std::vector<std::vector<Kickboard>>& border_kickboard_list, int max_cluster);
+Json::Value ConvexToJson(const std::vector<std::pair<std::vector<Kickboard>,int>>& border_kickboard_list, int max_cluster);
 
 #endif // ConvexHull_H

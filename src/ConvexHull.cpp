@@ -104,29 +104,28 @@ vector<Kickboard> grahamScan (vector<Kickboard> kickboard_list){
   return border_kickboard_list;
 }
 
-Json::Value ConvexToJson(const std::vector<std::vector<Kickboard>>& border_kickboard_list, int max_cluster) {
+Json::Value ConvexToJson(const std::vector<std::pair<std::vector<Kickboard>,int>>& border_kickboard_list, int max_cluster) {
   Json::Value root;
   Json::Value cluster_list(Json::arrayValue);
 
-  for(int i=0; i<max_cluster; i++){
-    Json::Value cluster_json;
-    cluster_json["cluster_id"] = i + 1; // 클러스터 ID는 1부터 시작한다고 가정
+    for (auto& border_list: border_kickboard_list) {
+        Json::Value cluster_json;
+        cluster_json["cluster_id"] = border_list.second;
 
-    Json::Value kickboard_list(Json::arrayValue);
-
-    for (const auto& kickboard : border_kickboard_list[i]) {
-      Json::Value kickboard_json;
-      kickboard_json["id"] = static_cast<Json::Int64>(kickboard.get_id());
-      kickboard_json["lat"] = kickboard.get_lat();
-      kickboard_json["lng"] = kickboard.get_lng();
-      kickboard_list.append(kickboard_json);
+        Json::Value kickboard_list(Json::arrayValue);
+        for (const auto &kickboard : border_list.first) {
+            Json::Value kickboard_json;
+            kickboard_json["id"] = static_cast<Json::Int64>(kickboard.get_id());
+            kickboard_json["lat"] = kickboard.get_lat();
+            kickboard_json["lng"] = kickboard.get_lng();
+            kickboard_list.append(kickboard_json);
+        }
+        const Coordinate &coordinate = calculateCentroid(border_list.first);
+        cluster_json["kickboard_list"] = kickboard_list;
+        cluster_json["cent_lat"] = coordinate.lat;
+        cluster_json["cent_lng"] = coordinate.lng;
+        cluster_list.append(cluster_json);
     }
-    const Coordinate &coordinate = calculateCentroid(border_kickboard_list[i]);
-    cluster_json["kickboard_list"] = kickboard_list;
-    cluster_json["cent_lat"] = coordinate.lat;
-    cluster_json["cent_lng"] = coordinate.lng;
-    cluster_list.append(cluster_json);
-  }
   root["cluster_list"] = cluster_list;
   root["max_cluster"] = max_cluster;
 

@@ -2,8 +2,8 @@
 #include "src/DBSCAN.h"
 #include "src/ConvexHull.h"
 #include "src/PolygonUtils.h"
-#include "algorithm_service.grpc.pb.h"
-#include "algorithm_service.pb.h"
+#include "src/algorithm_service.grpc.pb.h"
+#include "src/algorithm_service.pb.h"
 
 #include <iostream>
 #include <iomanip>
@@ -74,11 +74,13 @@ public :
         int max_cluster = clusters_pair.second;
 
         vector<Kickboard> kickboards, border_kickboards;
-        vector<vector<Kickboard>> border_kickboard_list;
-        for(int i=1; i<=max_cluster; i++){
-            kickboards = clusters[i].kickboard_list;
+        vector<pair<vector<Kickboard>,int>> border_kickboard_list;
+        for (auto& cluster: clusters) {
+            int id = cluster.cluster_id;
+            if(id == -1) continue;
+            kickboards = cluster.kickboard_list;
             border_kickboards = grahamScan(kickboards);
-            border_kickboard_list.push_back(border_kickboards);
+            border_kickboard_list.push_back({border_kickboards,id});
         }
 
         Json::Value convex_json = ConvexToJson(border_kickboard_list, max_cluster);
